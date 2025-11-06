@@ -1,16 +1,48 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const HistoryChart = () => {
-  const data = [
-    { time: "00:00", humidity: 65, light: 450, temp: 22 },
-    { time: "04:00", humidity: 68, light: 200, temp: 21 },
-    { time: "08:00", humidity: 62, light: 850, temp: 23 },
-    { time: "12:00", humidity: 58, light: 1200, temp: 26 },
-    { time: "16:00", humidity: 60, light: 900, temp: 25 },
-    { time: "20:00", humidity: 64, light: 300, temp: 23 },
-  ];
+interface HistoryChartProps {
+  plantId: string;
+}
+
+const HistoryChart = ({ plantId }: HistoryChartProps) => {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchHistoricalData();
+  }, [plantId]);
+
+  const fetchHistoricalData = async () => {
+    const { data: readings } = await supabase
+      .from('sensor_readings')
+      .select('*')
+      .eq('plant_id', plantId)
+      .order('recorded_at', { ascending: true })
+      .limit(24);
+
+    if (readings && readings.length > 0) {
+      const formattedData = readings.map((r) => ({
+        time: new Date(r.recorded_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        humidity: r.humidity || 0,
+        light: r.light_intensity || 0,
+        temp: r.temperature || 0,
+      }));
+      setData(formattedData);
+    } else {
+      // Fallback to mock data
+      setData([
+        { time: "00:00", humidity: 65, light: 450, temp: 22 },
+        { time: "04:00", humidity: 68, light: 200, temp: 21 },
+        { time: "08:00", humidity: 62, light: 850, temp: 23 },
+        { time: "12:00", humidity: 58, light: 1200, temp: 26 },
+        { time: "16:00", humidity: 60, light: 900, temp: 25 },
+        { time: "20:00", humidity: 64, light: 300, temp: 23 },
+      ]);
+    }
+  };
 
   return (
     <Card className="border-2 hover:shadow-lg transition-all duration-300 col-span-full">
