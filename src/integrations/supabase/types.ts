@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      plant_images: {
+        Row: {
+          ai_analysis: string | null
+          captured_at: string
+          confidence: number | null
+          disease_detected: boolean | null
+          disease_name: string | null
+          id: string
+          image_url: string
+          plant_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          captured_at?: string
+          confidence?: number | null
+          disease_detected?: boolean | null
+          disease_name?: string | null
+          id?: string
+          image_url: string
+          plant_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          captured_at?: string
+          confidence?: number | null
+          disease_detected?: boolean | null
+          disease_name?: string | null
+          id?: string
+          image_url?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_images_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plants: {
+        Row: {
+          created_at: string
+          id: string
+          location: string | null
+          name: string
+          plant_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name: string
+          plant_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name?: string
+          plant_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sensor_readings: {
+        Row: {
+          humidity: number | null
+          id: string
+          light_intensity: number | null
+          plant_id: string
+          recorded_at: string
+          soil_moisture: number | null
+          temperature: number | null
+        }
+        Insert: {
+          humidity?: number | null
+          id?: string
+          light_intensity?: number | null
+          plant_id: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          temperature?: number | null
+        }
+        Update: {
+          humidity?: number | null
+          id?: string
+          light_intensity?: number | null
+          plant_id?: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          temperature?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
